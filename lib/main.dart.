@@ -1,0 +1,472 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const AliyansTailoringApp());
+}
+
+const Color emerald = Color(0xFF064E3B);
+const Color green = Color(0xFF047857);
+const Color gold = Color(0xFFD4AF37);
+const Color pageBackground = Color(0xFFF4F7F5);
+
+class AliyansTailoringApp extends StatelessWidget {
+  const AliyansTailoringApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Aliyans Tailoring Manager',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
+        scaffoldBackgroundColor: pageBackground,
+        colorScheme: ColorScheme.fromSeed(seedColor: emerald),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: emerald,
+          foregroundColor: Colors.white,
+        ),
+      ),
+      home: const DashboardPage(),
+    );
+  }
+}
+
+class DashboardPage extends StatelessWidget {
+  const DashboardPage({super.key});
+
+  static const List<_DashboardItem> items = [
+    _DashboardItem('Customers', Icons.people_alt_outlined),
+    _DashboardItem('Groups', Icons.groups_outlined),
+    _DashboardItem('Orders', Icons.receipt_long_outlined),
+    _DashboardItem('Measurements', Icons.straighten_outlined),
+    _DashboardItem('Payments', Icons.payments_outlined),
+    _DashboardItem('Receipts', Icons.receipt_outlined),
+    _DashboardItem('Deliveries', Icons.local_shipping_outlined),
+    _DashboardItem('Reports', Icons.bar_chart_outlined),
+    _DashboardItem('Settings', Icons.settings_outlined),
+  ];
+
+  void openSection(BuildContext context, String title) {
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (context) => SectionPage(title: title),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'ALIYANS STYLE',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () => openSection(context, 'Settings'),
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: 'Settings',
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [emerald, green],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: gold, width: 1.5),
+              ),
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 28,
+                        backgroundColor: Colors.white,
+                        child: Icon(
+                          Icons.checkroom,
+                          size: 32,
+                          color: emerald,
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'ALIYANS STYLE\nTAILORING CENTER',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            height: 1.3,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    'Jega, Kebbi State, Nigeria',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'TAILORING MANAGER',
+                    style: TextStyle(
+                      color: gold,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Business Overview',
+              style: TextStyle(
+                fontSize: 19,
+                fontWeight: FontWeight.bold,
+                color: emerald,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                _StatCard(
+                  title: 'Customers',
+                  value: '0',
+                  icon: Icons.people_alt_outlined,
+                ),
+                _StatCard(
+                  title: 'Groups',
+                  value: '0',
+                  icon: Icons.groups_outlined,
+                ),
+                _StatCard(
+                  title: 'Total Orders',
+                  value: '0',
+                  icon: Icons.receipt_long_outlined,
+                ),
+                _StatCard(
+                  title: 'Revenue',
+                  value: '₦0',
+                  icon: Icons.account_balance_wallet_outlined,
+                ),
+              ],
+            ),
+            const SizedBox(height: 22),
+            Row(
+              children: [
+                Expanded(
+                  child: _QuickAction(
+                    label: 'Add Customer',
+                    icon: Icons.person_add_alt_1,
+                    onTap: () => openSection(context, 'Customers'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _QuickAction(
+                    label: 'Add Group',
+                    icon: Icons.group_add_outlined,
+                    onTap: () => openSection(context, 'Groups'),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 22),
+            const Text(
+              'Management',
+              style: TextStyle(
+                fontSize: 19,
+                fontWeight: FontWeight.bold,
+                color: emerald,
+              ),
+            ),
+            const SizedBox(height: 12),
+            GridView.builder(
+              itemCount: items.length,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 0.95,
+              ),
+              itemBuilder: (context, index) {
+                final item = items[index];
+                return _ManagementCard(
+                  title: item.title,
+                  icon: item.icon,
+                  onTap: () => openSection(context, item.title),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE7F5EC),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.chat, color: green, size: 30),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'WhatsApp Contact',
+                          style: TextStyle(
+                            color: emerald,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'Contact the tailoring center for enquiries.',
+                          style: TextStyle(color: Colors.black54),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: 0,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.people_outline),
+            label: 'Customers',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.groups_outlined),
+            label: 'Groups',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.receipt_long_outlined),
+            label: 'Orders',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.more_horiz),
+            label: 'More',
+          ),
+        ],
+        onDestinationSelected: (index) {
+          const destinations = [
+            'Home',
+            'Customers',
+            'Groups',
+            'Orders',
+            'More',
+          ];
+          if (index != 0) {
+            openSection(context, destinations[index]);
+          }
+        },
+      ),
+    );
+  }
+}
+
+class _DashboardItem {
+  final String title;
+  final IconData icon;
+
+  const _DashboardItem(this.title, this.icon);
+}
+
+class _StatCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final IconData icon;
+
+  const _StatCard({
+    required this.title,
+    required this.value,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: (MediaQuery.sizeOf(context).width - 42) / 2,
+      child: Card(
+        elevation: 1,
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: Color(0xFFE0E8E3)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, color: green, size: 25),
+              const SizedBox(height: 10),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: emerald,
+                ),
+              ),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.black54,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _QuickAction extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _QuickAction({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.icon(
+      onPressed: onTap,
+      icon: Icon(icon),
+      label: Text(label, textAlign: TextAlign.center),
+      style: FilledButton.styleFrom(
+        backgroundColor: emerald,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+      ),
+    );
+  }
+}
+
+class _ManagementCard extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _ManagementCard({
+    required this.title,
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.white,
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: Color(0xFFE0E8E3)),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: green, size: 30),
+              const SizedBox(height: 8),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: emerald,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SectionPage extends StatelessWidget {
+  final String title;
+
+  const SectionPage({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.construction_outlined,
+                color: green,
+                size: 64,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                '$title module',
+                style: const TextStyle(
+                  color: emerald,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'This section is ready for the next development stage.',
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
