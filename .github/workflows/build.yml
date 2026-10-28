@@ -29,13 +29,16 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Create Android platform files
-        run: flutter create --platforms=android .
+      - name: Verify Flutter project files
+        run: |
+          test -f pubspec.yaml
+          test -f lib/main.dart
+          grep -q "runApp(const AliyansTailoringApp())" lib/main.dart
 
       - name: Get Flutter dependencies
         run: flutter pub get
 
-      - name: Check Dart code
+      - name: Analyze Dart code
         run: flutter analyze
 
       - name: Build release APK
